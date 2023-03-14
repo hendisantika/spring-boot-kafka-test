@@ -1,8 +1,11 @@
 package com.hendisantika.springbootkafkatest;
 
+import com.hendisantika.springbootkafkatest.dto.UserDto;
+import com.hendisantika.springbootkafkatest.entity.User;
 import com.hendisantika.springbootkafkatest.kafka.producer.UserKafkaProducer;
 import com.hendisantika.springbootkafkatest.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,6 +15,11 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Testcontainers
@@ -35,4 +43,18 @@ class SpringBootKafkaTestApplicationTests {
 
     @MockBean
     private UserService userService;
+
+    @Test
+    void testProduceAndConsumeKafkaMessage() {
+        ArgumentCaptor<UserDto> captor = ArgumentCaptor.forClass(UserDto.class);
+        UserDto user = new UserDto("11111", "John", "Wick");
+
+        userKafkaProducer.writeToKafka(user);
+
+        verify(userService, timeout(5000)).save(captor.capture());
+        assertNotNull(captor.getValue());
+        assertEquals("11111", captor.getValue().getUuid());
+        assertEquals("John", captor.getValue().getFirstName());
+        assertEquals("Wick", captor.getValue().getLastName());
+    }
 }
