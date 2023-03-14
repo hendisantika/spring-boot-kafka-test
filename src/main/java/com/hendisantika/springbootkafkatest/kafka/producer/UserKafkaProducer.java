@@ -3,7 +3,10 @@ package com.hendisantika.springbootkafkatest.kafka.producer;
 import com.hendisantika.springbootkafkatest.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -37,4 +40,9 @@ public class UserKafkaProducer {
         kafkaTemplate.send(topic, user.getUuid(), user);
     }
 
+    @Bean
+    @Order(-1)
+    public NewTopic createNewTopic() {
+        return new NewTopic(topic, partitionNumber, (short) replicationFactor);
+    }
 }
