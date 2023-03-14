@@ -41,12 +41,11 @@ public class UserController {
 
     private final UserService userService;
 
-    private final Faker faker;
-
     @GetMapping("/random")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Create a user", description = "Creates a random user and write it to Kafka which is consumed by the listener")
     public void generateRandomUser() {
+        Faker faker = new Faker();
         kafkaProducer.writeToKafka(new UserDto(UUID.randomUUID().toString(), faker.name().firstName(), faker.name().lastName()));
     }
 
