@@ -32,4 +32,9 @@ public class UserKafkaProducer {
 
     @Value("${spring.kafka.partition.number:1}")
     private int partitionNumber;
+
+    public void writeToKafka(UserDto user) {
+        kafkaTemplate.send(topic, user.getUuid(), user);
+    }
+
 }
