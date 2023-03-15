@@ -5,6 +5,7 @@ import com.hendisantika.springbootkafkatest.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,5 +69,12 @@ public class UserServiceTest {
         assertEquals("McClane", users.get(1).getLastName());
         assertEquals("Rambo", users.get(2).getLastName());
         assertEquals("Wick", users.get(3).getLastName());
+    }
+
+    @Test
+    void testSaveUserThrowsExceptionOnDuplicateFirstNameAndLastName() {
+        assertThrows(DataIntegrityViolationException.class,
+                () -> userService.save(new UserDto(UUID.randomUUID().toString(), "John", "Wick")),
+                "Duplicate entry 'John-Wick' for key 'users.uc_user_first_last_name");
     }
 }
