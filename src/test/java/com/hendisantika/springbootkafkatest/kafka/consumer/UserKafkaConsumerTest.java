@@ -44,12 +44,12 @@ import static org.mockito.Mockito.verify;
  * Time: 09:08
  * To change this template use File | Settings | File Templates.
  */
-@EmbeddedKafka
+@EmbeddedKafka(partitions = 1, brokerProperties = "listeners=PLAINTEXT://localhost:9092")
 @SpringBootTest(properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserKafkaConsumerTest {
 
-    private final String TOPIC_NAME = "com.madadipouya.kafka.user";
+    private final String TOPIC_NAME = "com.hendisantika.springbootkafkatest.dto.UserDto";
     @Captor
     ArgumentCaptor<UserDto> userArgumentCaptor;
     @Captor
@@ -111,5 +111,6 @@ class UserKafkaConsumerTest {
     @AfterAll
     void shutdown() {
         producer.close();
+        embeddedKafkaBroker.destroy();
     }
 }
