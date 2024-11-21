@@ -15,7 +15,7 @@
     <description>An example project demonstrates testing Spring Kafka</description>
     <properties>
         <java.version>21</java.version>
-        <flyway.version>10.22.0</flyway.version>
+        <flyway.version>11.0.0</flyway.version>
         <flyway.url>jdbc:mysql://localhost:3306/test</flyway.url>
         <flyway.user>root</flyway.user>
         <flyway.password>secret</flyway.password>
